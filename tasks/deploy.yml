@@ -1,0 +1,95 @@
+- name: Create directories up to {{ deploy_to }} with owner {{ user }}
+  file: path={{ deploy_to }} owner={{ user }} state=directory
+  become: "{% if ansible_user_id == 'root' %}True{% else %}False{% endif %}"
+  become_user: "{{ user }}"
+
+- name: See if the deploy/public dir exists already
+  stat: path={{ deploy_to }}/public
+  register: public_dir
+
+- name: Activate maintenance page
+  file: path={{ deploy_to }}/public/maintenance.enable owner={{ user }} state=touch
+  when: public_dir.stat.exists == True
+
+- name: Make sure the source code at {{ deploy_to }} is at version {{ version }}
+  git: repo=https://github.com/zhdk/leihs.git version={{ version }} dest={{ deploy_to }} force=true
+  #become: (ansible_user_id == 'root') | ternary(true,false)
+  #become_user: "{{ user }}"
+  #become_method: su
+  remote_user: "{{ user }}"
+
+- name: Link to shared attachment dir for images
+  file: src={{ shared_dir }}/attachments dest={{ deploy_to }}/public/images/attachments owner=leihs state=link force=yes
+
+- name: Link to shared attachment dir for attachments
+  file: src={{ shared_dir }}/attachments dest={{ deploy_to }}/public/attachments owner=leihs state=link force=yes
+
+- name: Create database.yml
+  template: src=database.yml.j2 dest={{ deploy_to }}/config/database.yml
+- name: Create secret_token.rb
+  template: src=secret_token.rb.j2 dest={{ deploy_to }}/config/secret_token.rb owner={{ user }}
+
+- name: Copy LDAP configuration
+  copy: src={{ ldap_config }} dest={{ deploy_to }}/config/LDAP.yml
+  when: ldap_config != False
+
+- name: Install Bundler
+  command: bash -l -c "rbenv shell {{ ruby_version }} && gem install bundler"
+  remote_user: "{{ user }}"
+
+- name: Install RubyGems for leihs
+  command: bash -l -c 'cd {{ deploy_to }}
+    && rbenv shell {{ ruby_version }}
+    && RAILS_ENV="production" bundle install --without development test --deployment --path {{ shared_dir }}/bundle'
+  remote_user: "{{ user }}"
+
+- name: Create database backup directory
+  file: path={{ shared_dir }}/db_backups owner={{ user }} state=directory
+
+- name: Back up database {{ mysql_database }}
+  shell: mysqldump -u{{ mysql_user }} --password={{ mysql_password }} {{ mysql_database }} > {{ shared_dir }}/db_backups/leihs-{{ mysql_database}}-{{ ansible_date_time.iso8601_micro }}.sql
+  become: (ansible_user_id == 'root') | ternary(true,false)
+  become_user: "{{ user }}"
+  become_method: su
+
+- name: Migrate database
+  command: bash -l -c 'cd {{ deploy_to }}
+    && rbenv shell {{ ruby_version }}
+    && RAILS_ENV="production" bundle exec rake db:migrate'
+  remote_user: "{{ user }}"
+
+- name: Precompile assets
+  command: bash -l -c 'cd {{ deploy_to }}
+    && rbenv shell {{ ruby_version }}
+    && RAILS_ENV="production" bundle exec rake assets:precompile'
+  remote_user: "{{ user }}"
+
+- name: Find the currently deployed revision
+  command: chdir={{ deploy_to }} git log -n 1 --pretty=format:%H
+  register: revision
+  when: test_instance == True
+
+- name: Put deploy information in the footer
+  command: bash -l -c 'cd {{ deploy_to }}
+    && rbenv shell {{ ruby_version }} 
+    && RAILS_ENV="production" BRANCH={{ version }} REVISION={{ revision.stdout }} bundle exec rake leihs:set_deploy_information_footer'
+  when: test_instance == True
+  remote_user: "{{ user }}"
+
+- name: Disable actually sending email
+  lineinfile:
+    dest: "{{ deploy_to }}/config/environments/production.rb"
+    regexp: "^.*config.action_mailer.perform_deliveries.*"
+    line: "  config.action_mailer.perform_deliveries = false"
+    state: present
+  become: (ansible_user_id == 'root') | ternary(true,false)
+  become_user: "{{ user }}"
+  become_method: su
+  when: test_instance == True
+
+- name: Signal Passenger to restart instance
+  file: path={{ deploy_to }}/tmp/restart.txt owner={{ user }} state=touch
+
+- name: Deactivate maintenance page
+  file: path={{ deploy_to }}/public/maintenance.enable owner={{ user }} state=absent
+

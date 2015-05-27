@@ -1,0 +1,42 @@
+---
+# setup tasks are tasks that need to be run before the very first
+# deploy, like making sure the database exists.
+- include: setup.yml
+  tags:
+    - setup
+
+- name: Install packages leihs depends on
+  apt: pkg={{ item }} state=present
+  with_items:
+    - imagemagick
+
+- name: Configure logrotate for leihs
+  template: src=logrotate.j2 dest=/etc/logrotate.d/{{ server_name }}
+
+- name: Make sure shared directory exists
+  file: path={{ shared_dir }} owner={{ user }} group={{ user }} state=directory
+
+- name: Make sure attachments directory exists
+  file: path={{ shared_dir }}/attachments owner={{ user }} group={{ user }} state=directory
+
+- name: Make sure shared bundle directory exists
+  file: path={{ shared_dir }}/bundle owner={{ user }} group={{ user }} state=directory
+
+# deploy only if the vars we need for deployment are set
+- include: deploy.yml
+  when: version is defined and deploy_to is defined
+  tags:
+    - deploy
+
+# Seed if this is the first time leihs gets deployed
+
+- name: See if the database has been seeded already
+  command: mysql -u {{ mysql_user }} --password={{ mysql_password }} {{ mysql_database }} -e 'select * from users;'
+  register: users_present
+  tags:
+    - seed
+
+- include: seed.yml
+  when: users_present.stdout == ""
+  tags:
+    - seed

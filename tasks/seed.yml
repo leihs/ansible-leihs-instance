@@ -1,0 +1,5 @@
+---
+- name: Seed the database with initial data/users
+  command: bash -l -c 'rvm use {{ ruby_version }} && RAILS_ENV="production" bundle exec rake db:seed' chdir={{ deploy_to }}
+  become: "{% if ansible_user == 'root' %}True{% else %}False{% endif %}"
+  become_user: "{{ user }}"

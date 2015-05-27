@@ -1,0 +1,20 @@
+---
+- name: Create leihs user called '{{ user }}'
+  user: name={{ user }} shell=/bin/bash
+
+- name: Install MySQL and associated dev files
+  apt: pkg={{ item }} state=present
+  with_items:
+    - python-mysqldb
+    - libmysqlclient-dev
+    - mysql-server
+    - mysql-client
+
+- name: Create MySQL root password
+  mysql_user: name=root priv=*.*:ALL,GRANT password={{ mysql_root_password }} login_user=root login_password={{ mysql_root_password }} check_implicit_admin=True
+- name: Create MySQL user for user
+  mysql_user: name={{ mysql_user }} priv={{ mysql_database }}.*:ALL password={{ mysql_password }} login_user=root login_password={{ mysql_root_password }}
+
+- name: Create MySQL db for leihs production
+  mysql_db: name={{ mysql_database }} encoding=utf8 state=present login_user=root login_password={{ mysql_root_password }}
+
