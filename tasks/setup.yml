@@ -1,7 +1,4 @@
 ---
-- name: Create leihs user called '{{ user }}'
-  user: name={{ user }} shell=/bin/bash
-
 - name: Install MySQL and associated dev files
   apt: pkg={{ item }} state=present
   with_items:
@@ -17,4 +14,3 @@
 
 - name: Create MySQL db for leihs production
   mysql_db: name={{ mysql_database }} encoding=utf8 state=present login_user=root login_password={{ mysql_root_password }}
-
