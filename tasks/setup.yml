@@ -6,9 +6,12 @@
     - libmysqlclient-dev
     - mysql-server
     - mysql-client
+  environment:
+    DEBIAN_FRONTEND: noninteractive # This is here so the root password is set to blank and not a randomly generated Debian password
 
 - name: Create MySQL root password
   mysql_user: name=root priv=*.*:ALL,GRANT password={{ mysql_root_password }} login_user=root login_password={{ mysql_root_password }} check_implicit_admin=True
+
 - name: Create MySQL user for user
   mysql_user: name={{ mysql_user }} priv={{ mysql_database }}.*:ALL password={{ mysql_password }} login_user=root login_password={{ mysql_root_password }}
 

@@ -2,7 +2,7 @@
 dependencies:
   - { role: leihs-user }
   - { role: phusion-passenger }
-  - role: leonidas.rbenv
+  - role: avsej.rbenv
     rbenv:
       user: "{{ user }}"
       version: v0.4.0
