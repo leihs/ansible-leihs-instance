@@ -4,4 +4,8 @@ production:
   database: {{ mysql_database }}
   username: {{ mysql_user }}
   password: {{ mysql_password }}
+  {% if local_database %}
   host: localhost
+  {% else %}
+  host: {{ mysql_host }}
+  {% endif %}

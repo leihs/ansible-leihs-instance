@@ -51,6 +51,14 @@
   become: (ansible_user_id == 'root') | ternary(true,false)
   become_user: "{{ user }}"
   become_method: su
+  when: local_database == True
+
+- name: Back up remote database {{ mysql_database }} from {{ mysql_host }}
+  shell: mysqldump -h {{ mysql_host }} -u{{ mysql_user }} --password={{ mysql_password }} {{ mysql_database }} > {{ shared_dir }}/db_backups/leihs-{{ mysql_database}}-{{ ansible_date_time.iso8601_micro }}.sql
+  become: (ansible_user_id == 'root') | ternary(true,false)
+  become_user: "{{ user }}"
+  become_method: su
+  when: local_database == False
 
 - name: Migrate database
   command: bash -l -c 'cd {{ deploy_to }}
@@ -71,7 +79,7 @@
 
 - name: Put deploy information in the footer
   command: bash -l -c 'cd {{ deploy_to }}
-    && rbenv shell {{ ruby_version }} 
+    && rbenv shell {{ ruby_version }}
     && RAILS_ENV="production" BRANCH={{ version }} REVISION={{ revision.stdout }} bundle exec rake leihs:set_deploy_information_footer'
   when: test_instance == True
   remote_user: "{{ user }}"
@@ -92,4 +100,3 @@
 
 - name: Deactivate maintenance page
   file: path={{ deploy_to }}/public/maintenance.enable owner={{ user }} state=absent
-

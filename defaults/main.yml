@@ -15,3 +15,4 @@ certificate_chain_file: False
 certificate_key_file: False
 ldap_config: False
 test_instance: False
+local_database: True
