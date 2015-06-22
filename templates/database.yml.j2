@@ -1,11 +1,13 @@
+{# "if ... and" means to test if it's true, not just if it's defined #}
+{# Keep those -%} in there, otherwise the indent level is wrong in the resulting YAML #}
 production:
   adapter: mysql2
   encoding: utf8
   database: {{ mysql_database }}
   username: {{ mysql_user }}
   password: {{ mysql_password }}
-  {% if local_database %}
-  host: localhost
-  {% else %}
-  host: {{ mysql_host }}
+  {% if  local_database is defined and local_database -%}
+    host: localhost
+  {% else -%}
+    host: {{ mysql_host }}
   {% endif %}

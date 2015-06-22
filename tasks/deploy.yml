@@ -13,9 +13,6 @@
 
 - name: Make sure the source code at {{ deploy_to }} is at version {{ version }}
   git: repo=https://github.com/zhdk/leihs.git version={{ version }} dest={{ deploy_to }} force=true
-  #become: (ansible_user_id == 'root') | ternary(true,false)
-  #become_user: "{{ user }}"
-  #become_method: su
   remote_user: "{{ user }}"
 
 - name: Link to shared attachment dir for images
