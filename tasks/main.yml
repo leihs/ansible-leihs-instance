@@ -45,6 +45,7 @@
   when: local_database == False
 
 - include: seed.yml
-  when: (users_present_locally and users_present_locally.stdout == "") or (users_present_remotely and users_present_remotely.stdout == "")
+  when: (users_present_locally is defined and users_present_locally.stdout == "") or
+        (users_present_remotely is defined and users_present_remotely.stdout == "")
   tags:
     - seed
