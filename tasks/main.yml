@@ -10,6 +10,7 @@
   with_items:
     - imagemagick
     - libmysqlclient-dev
+    - mysql-client
 
 - name: Configure logrotate for leihs
   template: src=logrotate.j2 dest=/etc/logrotate.d/{{ server_name }}
