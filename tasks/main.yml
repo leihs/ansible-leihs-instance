@@ -51,3 +51,10 @@
         (users_present_remotely is defined and users_present_remotely.stdout == "")
   tags:
     - seed
+
+#  TODO: This.
+# - name: Copy script that resets demo instance data
+#
+# - name: Install cronjob that resets demo instance data nightly
+#
+# - name: Reset the demo instance to its initial values
