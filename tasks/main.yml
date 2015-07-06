@@ -52,9 +52,10 @@
   tags:
     - seed
 
-#  TODO: This.
-# - name: Copy script that resets demo instance data
-#
+- name: Copy script that resets demo instance data
+  template: src=reseed_demo_data.sh.j2 dest="{{ deploy_to }}/reseed_demo_data.sh"
+  when: demo_instance == True
+
 # - name: Install cronjob that resets demo instance data nightly
 #
 # - name: Reset the demo instance to its initial values
