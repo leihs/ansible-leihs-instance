@@ -16,13 +16,13 @@
   template: src=logrotate.j2 dest=/etc/logrotate.d/{{ server_name }}
 
 - name: Make sure shared directory exists
-  file: path={{ shared_dir }} owner={{ user }} group={{ user }} state=directory
+  file: path={{ deploy_to }}/shared owner={{ user }} group={{ user }} state=directory
 
 - name: Make sure attachments directory exists
-  file: path={{ shared_dir }}/attachments owner={{ user }} group={{ user }} state=directory
+  file: path={{ deploy_to }}/shared/attachments owner={{ user }} group={{ user }} state=directory
 
 - name: Make sure shared bundle directory exists
-  file: path={{ shared_dir }}/bundle owner={{ user }} group={{ user }} state=directory
+  file: path={{ deploy_to }}/shared/bundle owner={{ user }} group={{ user }} state=directory
 
 # deploy only if the vars we need for deployment are set
 - include: deploy.yml
@@ -62,6 +62,5 @@
 
 - name: Reset the demo instance to its initial values
   shell: "{{ deploy_to }}/reseed_demo_data.sh"
-  args:
-    executable: /bin/bash
   remote_user: "{{ user }}"
+  when: demo_instance == True

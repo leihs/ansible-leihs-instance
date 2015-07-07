@@ -9,7 +9,6 @@ passenger_ruby: "/home/leihs/.rbenv/versions/2.1.5/bin/ruby"
 ruby_version: "2.1.5"
 server_name: "leihs.local"
 document_root: "/home/leihs/production/current/public"
-shared_dir: "/home/leihs/production/shared"
 certificate_file: False
 certificate_chain_file: False
 certificate_key_file: False

@@ -16,10 +16,10 @@
   remote_user: "{{ user }}"
 
 - name: Link to shared attachment dir for images
-  file: src={{ shared_dir }}/attachments dest={{ deploy_to }}/public/images/attachments owner=leihs state=link force=yes
+  file: src={{ deploy_to }}/shared/attachments dest={{ deploy_to }}/public/images/attachments owner=leihs state=link force=yes
 
 - name: Link to shared attachment dir for attachments
-  file: src={{ shared_dir }}/attachments dest={{ deploy_to }}/public/attachments owner=leihs state=link force=yes
+  file: src={{ deploy_to }}/shared/attachments dest={{ deploy_to }}/public/attachments owner=leihs state=link force=yes
 
 - name: Create database.yml
   template: src=database.yml.j2 dest={{ deploy_to }}/config/database.yml
@@ -37,21 +37,21 @@
 - name: Install RubyGems for leihs
   command: bash -l -c 'cd {{ deploy_to }}
     && rbenv shell {{ ruby_version }}
-    && RAILS_ENV="production" bundle install --without development test --deployment --path {{ shared_dir }}/bundle'
+    && RAILS_ENV="production" bundle install --without development test --deployment --path {{ deploy_to }}/shared/bundle'
   remote_user: "{{ user }}"
 
 - name: Create database backup directory
-  file: path={{ shared_dir }}/db_backups owner={{ user }} state=directory
+  file: path={{ deploy_to }}/shared/db_backups owner={{ user }} state=directory
 
 - name: Back up database {{ mysql_database }}
-  shell: mysqldump -u{{ mysql_user }} --password={{ mysql_password }} {{ mysql_database }} > {{ shared_dir }}/db_backups/leihs-{{ mysql_database}}-{{ ansible_date_time.iso8601_micro }}.sql
+  shell: mysqldump -u{{ mysql_user }} --password={{ mysql_password }} {{ mysql_database }} > {{ deploy_to }}/shared/db_backups/leihs-{{ mysql_database}}-{{ ansible_date_time.iso8601_micro }}.sql
   become: (ansible_user_id == 'root') | ternary(true,false)
   become_user: "{{ user }}"
   become_method: su
   when: local_database == True
 
 - name: Back up remote database {{ mysql_database }} from {{ mysql_host }}
-  shell: mysqldump -h {{ mysql_host }} -u{{ mysql_user }} --password={{ mysql_password }} {{ mysql_database }} > {{ shared_dir }}/db_backups/leihs-{{ mysql_database}}-{{ ansible_date_time.iso8601_micro }}.sql
+  shell: mysqldump -h {{ mysql_host }} -u{{ mysql_user }} --password={{ mysql_password }} {{ mysql_database }} > {{ deploy_to }}/shared/db_backups/leihs-{{ mysql_database}}-{{ ansible_date_time.iso8601_micro }}.sql
   become: (ansible_user_id == 'root') | ternary(true,false)
   become_user: "{{ user }}"
   become_method: su
