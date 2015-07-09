@@ -14,7 +14,7 @@
   set_fact: passenger_ruby="{{ rbenv_ruby.stdout }}"
 
 - name: Set a var for our document_root so we don't have to specify it by hand
-  set_fact: document_root="{{ deploy_to }}/public"
+  set_fact: document_root="{{ deploy_to }}/current/public"
 
 - name: Install packages leihs depends on
   apt: pkg={{ item }} state=present
@@ -34,6 +34,9 @@
 
 - name: Make sure shared bundle directory exists
   file: path={{ deploy_to }}/shared/bundle owner={{ user }} group={{ user }} state=directory
+
+- name: Make sure shared log directory exists
+  file: path={{ deploy_to }}/shared/log owner={{ user }} group={{ user }} state=directory
 
 # deploy only if the vars we need for deployment are set
 - include: deploy.yml

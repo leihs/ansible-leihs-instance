@@ -12,22 +12,22 @@
   when: public_dir.stat.exists == True
 
 - name: Make sure the source code at {{ deploy_to }} is at version {{ version }}
-  git: repo=https://github.com/zhdk/leihs.git version={{ version }} dest={{ deploy_to }} force=true
+  git: repo=https://github.com/zhdk/leihs.git version={{ version }} dest={{ deploy_to }}/current force=true
   remote_user: "{{ user }}"
 
 - name: Link to shared attachment dir for images
-  file: src={{ deploy_to }}/shared/attachments dest={{ deploy_to }}/public/images/attachments owner=leihs state=link force=yes
+  file: src={{ deploy_to }}/shared/attachments dest={{ deploy_to }}/current/public/images/attachments owner=leihs state=link force=yes
 
 - name: Link to shared attachment dir for attachments
-  file: src={{ deploy_to }}/shared/attachments dest={{ deploy_to }}/public/attachments owner=leihs state=link force=yes
+  file: src={{ deploy_to }}/shared/attachments dest={{ deploy_to }}/current/public/attachments owner=leihs state=link force=yes
 
 - name: Create database.yml
-  template: src=database.yml.j2 dest={{ deploy_to }}/config/database.yml
+  template: src=database.yml.j2 dest={{ deploy_to }}/current/config/database.yml
 - name: Create secret_token.rb
-  template: src=secret_token.rb.j2 dest={{ deploy_to }}/config/secret_token.rb owner={{ user }}
+  template: src=secret_token.rb.j2 dest={{ deploy_to }}/current/config/secret_token.rb owner={{ user }}
 
 - name: Copy LDAP configuration
-  copy: src={{ ldap_config }} dest={{ deploy_to }}/config/LDAP.yml
+  copy: src={{ ldap_config }} dest={{ deploy_to }}/current/config/LDAP.yml
   when: ldap_config != False
 
 - name: Install Bundler
@@ -35,7 +35,7 @@
   remote_user: "{{ user }}"
 
 - name: Install RubyGems for leihs
-  command: bash -l -c 'cd {{ deploy_to }}
+  command: bash -l -c 'cd {{ deploy_to }}/current
     && rbenv shell {{ ruby_version }}
     && RAILS_ENV="production" bundle install --without development test --deployment --path {{ deploy_to }}/shared/bundle'
   remote_user: "{{ user }}"
@@ -58,24 +58,24 @@
   when: local_database == False
 
 - name: Migrate database
-  command: bash -l -c 'cd {{ deploy_to }}
+  command: bash -l -c 'cd {{ deploy_to }}/current
     && rbenv shell {{ ruby_version }}
     && RAILS_ENV="production" bundle exec rake db:migrate'
   remote_user: "{{ user }}"
 
 - name: Precompile assets
-  command: bash -l -c 'cd {{ deploy_to }}
+  command: bash -l -c 'cd {{ deploy_to }}/current
     && rbenv shell {{ ruby_version }}
     && RAILS_ENV="production" bundle exec rake assets:precompile'
   remote_user: "{{ user }}"
 
 - name: Find the currently deployed revision
-  command: chdir={{ deploy_to }} git log -n 1 --pretty=format:%H
+  command: chdir={{ deploy_to }}/current git log -n 1 --pretty=format:%H
   register: revision
   when: test_instance == True
 
 - name: Put deploy information in the footer
-  command: bash -l -c 'cd {{ deploy_to }}
+  command: bash -l -c 'cd {{ deploy_to }}/current
     && rbenv shell {{ ruby_version }}
     && RAILS_ENV="production" BRANCH={{ version }} REVISION={{ revision.stdout }} bundle exec rake leihs:set_deploy_information_footer'
   when: test_instance == True
@@ -83,7 +83,7 @@
 
 - name: Disable actually sending email
   lineinfile:
-    dest: "{{ deploy_to }}/config/environments/production.rb"
+    dest: "{{ deploy_to }}/current/config/environments/production.rb"
     regexp: "^.*config.action_mailer.perform_deliveries.*"
     line: "  config.action_mailer.perform_deliveries = false"
     state: present
@@ -93,7 +93,7 @@
   when: test_instance == True
 
 - name: Signal Passenger to restart instance
-  file: path={{ deploy_to }}/tmp/restart.txt owner={{ user }} state=touch
+  file: path={{ deploy_to }}/current/tmp/restart.txt owner={{ user }} state=touch
 
 - name: Deactivate maintenance page
-  file: path={{ deploy_to }}/public/maintenance.enable owner={{ user }} state=absent
+  file: path={{ deploy_to }}/current/public/maintenance.enable owner={{ user }} state=absent
