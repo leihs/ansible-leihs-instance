@@ -21,6 +21,9 @@
 - name: Link to shared attachment dir for attachments
   file: src={{ deploy_to }}/shared/attachments dest={{ deploy_to }}/current/public/attachments owner=leihs state=link force=yes
 
+- name: Link to shared log dir
+  file: src={{ deploy_to }}/shared/log dest={{ deploy_to }}/current/log owner=leihs state=link force=yes
+
 - name: Create database.yml
   template: src=database.yml.j2 dest={{ deploy_to }}/current/config/database.yml
 - name: Create secret_token.rb
