@@ -34,6 +34,7 @@ Really only makes sense as part of a larger playbook that takes care of all the 
  * **ruby_version**: The version of Ruby to use to run this version of leihs. Default: `2.1.5`. Optional but recommended.
  * **user**: The system user on the server under which leihs should run. Default: `leihs`. Optional but recommended.
  * **authorized_for_deployment**: Array of paths to SSH key files of the people who are supposed to be authorized for deploying leihs to this server. If you're not sure what to add here, just add your own key, presuming that it already has root access to the target server. The path is relative to the main playbook that you use the leihs-instance role in. Required.
+ * **logrotate_filename**: The filename under /etc/logrotate.d where the logrotate configuration for this instance should be stored. The file `log/production.log` will be rotated this way. You need to give the filename to prevent filename clashes with existing files. Required.
  * **ldap_config**: Path to an LDAP configuration file to copy to config/LDAP.yml on the target host. Optional.
  * **demo_instance**: Whether to seed this instance with demo data and install a cronjob that empties the database every night at 4:15 and reseeds it. Useful for demonstration purposes. Optional. Default: `false`.
  * **test_instance**: Whether this is a test instance. On test instances, the currently deployed version is displayed publicly. Optional. Default: `false`.
