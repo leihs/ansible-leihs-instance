@@ -2,9 +2,11 @@
 dependencies:
   - { role: leihs-user }
   - { role: phusion-passenger }
-  - role: leonidas.rbenv
-    rbenv:
-      user: "{{ user }}"
-      version: v0.4.0
-      ruby_version: "{{ ruby_version }}"
-#  - { role: phusion-passenger-vhost }
+  - role: k0st1an.rbenv
+    rbenv_user: "{{ user }}"
+    rbenv_ruby_version: "{{ ruby_version }}"
+    rbenv_ruby_initial: 'local'
+    # rbenv:
+    #   user: "{{ user }}"
+    #   version: v0.4.0
+    #   ruby_version: "{{ ruby_version }}"
