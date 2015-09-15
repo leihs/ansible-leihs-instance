@@ -1,14 +1,6 @@
 ---
-enabled: True
-server_aliases: []
-ssl: False
-sslredirect: False
-max_requests: False
 user: leihs
 ruby_version: "2.1.5"
-certificate_file: False
-certificate_chain_file: False
-certificate_key_file: False
 ldap_config: False
 test_instance: False
 demo_instance: False
