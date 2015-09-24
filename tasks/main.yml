@@ -67,7 +67,7 @@
     - seed
 
 - name: Copy script that resets demo instance data
-  template: src=reseed_demo_data.sh.j2 dest="{{ deploy_to }}/reseed_demo_data.sh" mode=0744 owner="{{ user }}" group="{{ user }}"
+  template: src=reseed_demo_data.sh.j2 dest="{{ deploy_to }}/current/reseed_demo_data.sh" mode=0744 owner="{{ user }}" group="{{ user }}"
   when: demo_instance == True
 
 - name: Install cronjob that resets demo instance data nightly
@@ -75,6 +75,6 @@
   when: demo_instance == True
 
 - name: Reset the demo instance to its initial values
-  shell: "{{ deploy_to }}/reseed_demo_data.sh"
+  shell: "{{ deploy_to }}/current/reseed_demo_data.sh"
   remote_user: "{{ user }}"
   when: demo_instance == True
