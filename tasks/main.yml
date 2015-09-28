@@ -71,10 +71,18 @@
   when: demo_instance == True
 
 - name: Install cronjob that resets demo instance data nightly
-  cron: user={{ user }} name="Reseed demo instance" minute="15" hour="4" job="{{ deploy_to }}/reseed_demo_data.sh"
+  cron: user={{ user }} name="Reseed demo instance" minute="15" hour="4" job="{{ deploy_to }}/current/reseed_demo_data.sh"
   when: demo_instance == True
 
 - name: Reset the demo instance to its initial values
   shell: "{{ deploy_to }}/current/reseed_demo_data.sh"
   remote_user: "{{ user }}"
   when: demo_instance == True
+
+- name: Copy script that runs rake leihs:cron via rbenv
+  template: src=run_cronjobs.sh.j2 dest="{{ deploy_to }}/current/run_cronjobs.sh" mode=0744 owner="{{ user }}" group="{{ user }}"
+  when: demo_instance == False and test_instance == False
+
+- name: Install cronjob that runs rake leihs:cron via rbenv
+  cron: user={{ user }} name="Run leihs cronjobs" minute="15" hour="5" job="{{ deploy_to }}/current/reseed_demo_data.sh"
+  when: demo_instance == False and test_instance == False
