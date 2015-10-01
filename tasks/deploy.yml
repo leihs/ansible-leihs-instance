@@ -4,11 +4,11 @@
   become_user: "{{ user }}"
 
 - name: See if the deploy/public dir exists already
-  stat: path={{ deploy_to }}/public
+  stat: path={{ deploy_to }}/current/public
   register: public_dir
 
 - name: Activate maintenance page
-  file: path={{ deploy_to }}/public/maintenance.enable owner={{ user }} state=touch
+  file: path={{ deploy_to }}/current/public/maintenance.enable owner={{ user }} state=touch
   when: public_dir.stat.exists == True
 
 - name: Make sure the source code at {{ deploy_to }} is at version {{ version }}
