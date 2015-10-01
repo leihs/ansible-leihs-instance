@@ -28,6 +28,8 @@
 
 - name: Make sure shared directory exists
   file: path={{ deploy_to }}/shared owner={{ user }} group={{ user }} state=directory
+  tags:
+    - setup
 
 - name: Make sure attachments directory exists
   file: path={{ deploy_to }}/shared/attachments owner={{ user }} group={{ user }} state=directory

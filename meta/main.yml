@@ -2,10 +2,10 @@
 dependencies:
   - { role: leihs-user }
   - { role: phusion-passenger }
-  - role: k0st1an.rbenv
-    rbenv_user: "{{ user }}"
-    rbenv_ruby_version: "{{ ruby_version }}"
-    rbenv_ruby_initial: 'local'
+  - role: erasme.rbenv
+    ruby_deploy_user: "{{ user }}"
+    version: "{{ ruby_version }}"
+    ruby_default: "{{ ruby_version }}"
     # rbenv:
     #   user: "{{ user }}"
     #   version: v0.4.0
