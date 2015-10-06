@@ -6,12 +6,12 @@
     - setup
 
 - name: Find the path to the version of Ruby we want Passenger to run
-  command: bash -l -c "rbenv which ruby"
-  register: rbenv_ruby
+  command: bash -l -c "rbenv shell {{ ruby_version }} && rbenv which ruby"
+  register: rbenv_ruby_path
   remote_user: "{{ user }}"
 
 - name: Set a var for to the version of Ruby we want Passenger to run
-  set_fact: passenger_ruby="{{ rbenv_ruby.stdout }}"
+  set_fact: passenger_ruby="{{ rbenv_ruby_path.stdout }}"
 
 - name: Set a var for our document_root so we don't have to specify it by hand
   set_fact: document_root="{{ deploy_to }}/current/public"
@@ -28,6 +28,8 @@
 
 - name: Make sure shared directory exists
   file: path={{ deploy_to }}/shared owner={{ user }} group={{ user }} state=directory
+  tags:
+    - setup
 
 - name: Make sure attachments directory exists
   file: path={{ deploy_to }}/shared/attachments owner={{ user }} group={{ user }} state=directory
