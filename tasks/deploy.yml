@@ -72,6 +72,14 @@
     && RAILS_ENV="production" bundle exec rake assets:precompile'
   remote_user: "{{ user }}"
 
+# NOTE after upgrading to Rails 4, the assets precompilation doesn't keep the original filename without fingerprint anymore
+# the timeline library has hardcoded filename which are loaded dynamically
+- name: Workaround for assets
+  command: bash -l -c 'cd {{ deploy_to }}/current
+    && rbenv shell {{ ruby_version }}
+    && cp -r vendor/assets/javascripts/simile_timeline/timeline_js public/assets/simile_timeline/'
+  remote_user: "{{ user }}"
+
 - name: Find the currently deployed revision
   command: chdir={{ deploy_to }}/current git log -n 1 --pretty=format:%H
   register: revision
