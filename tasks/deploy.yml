@@ -108,3 +108,10 @@
 
 - name: Deactivate maintenance page
   file: path={{ deploy_to }}/current/public/maintenance.enable owner={{ user }} state=absent
+
+- name: Notify people that a new version has been deployed
+  command: bash -l -c 'cd {{ deploy_to }}/current
+    && rbenv shell {{ ruby_version }}
+    && RAILS_ENV="production" bundle exec rails runner script/mail.rb -r {{ notification_recipients }} -s "[leihs] Deployed version {{ version }} to {{ ansible_hostname }}"'
+  when: notification_recipients != False and test_instance == False and demo_instance == false
+  remote_user: "{{ user }}"
