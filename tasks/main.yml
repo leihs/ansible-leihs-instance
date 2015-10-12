@@ -86,5 +86,5 @@
   when: demo_instance == False and test_instance == False
 
 - name: Install cronjob that runs rake leihs:cron via rbenv
-  cron: user={{ user }} name="Run leihs cronjobs" minute="15" hour="5" job="{{ deploy_to }}/current/reseed_demo_data.sh"
+  cron: user={{ user }} name="Run leihs cronjobs" minute="15" hour="5" job="{{ deploy_to }}/current/run_cronjobs.sh"
   when: demo_instance == False and test_instance == False
