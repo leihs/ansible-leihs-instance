@@ -5,29 +5,6 @@
   tags:
     - setup
 
-- name: Check if Ruby {{ ruby_version }} for user {{ user }} is installed
-  shell: bash -l -c "rbenv versions | grep {{ ruby_version }}"
-  register: ruby_installed 
-  remote_user: "{{ user }}"
-  ignore_errors: true
-
-- name: Install Ruby {{ ruby_version }} for user {{ user }}
-  command: bash -l -c "rbenv install {{ ruby_version }}"
-  register: rbenv_ruby_path
-  remote_user: "{{ user }}"
-  when: ruby_installed.rc != 0
-
-- name: Find the path to the version of Ruby we want Passenger to run
-  command: bash -l -c "rbenv shell {{ ruby_version }} && rbenv which ruby"
-  register: rbenv_ruby_path
-  remote_user: "{{ user }}"
-
-- name: Set a var for to the version of Ruby we want Passenger to run
-  set_fact: passenger_ruby="{{ rbenv_ruby_path.stdout }}"
-
-- name: Set a var for our document_root so we don't have to specify it by hand
-  set_fact: document_root="{{ deploy_to }}/current/public"
-
 - name: Install packages leihs depends on
   apt: pkg={{ item }} state=present
   with_items:
