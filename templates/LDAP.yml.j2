@@ -9,8 +9,8 @@ production:
   master_bind_dn: {{ ldap_master_bind_dn }}
   master_bind_pw: {{ ldap_master_bind_password }}
   base_dn: {{ ldap_base_dn }}
-  {% if ldap_admin_dn is defined and ldap_admin_dn -%}
-    admin_dn: {{ ldap_admin_dn }}
-  {% end %}
   unique_id_field: {{ ldap_unique_id_field }}
   search_field: {{ ldap_search_field }}
+  {% if ldap_admin_dn is defined and ldap_admin_dn -%}
+    admin_dn: {{ ldap_admin_dn }}
+  {% endif %}

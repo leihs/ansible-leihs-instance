@@ -5,10 +5,17 @@
   tags:
     - setup
 
+- name: Check if Ruby {{ ruby_version }} for user {{ user }} is installed
+  shell: bash -l -c "rbenv versions | grep {{ ruby_version }}"
+  register: ruby_installed 
+  remote_user: "{{ user }}"
+  ignore_errors: true
+
 - name: Install Ruby {{ ruby_version }} for user {{ user }}
   command: bash -l -c "rbenv install {{ ruby_version }}"
   register: rbenv_ruby_path
   remote_user: "{{ user }}"
+  when: ruby_installed.rc != 0
 
 - name: Find the path to the version of Ruby we want Passenger to run
   command: bash -l -c "rbenv shell {{ ruby_version }} && rbenv which ruby"
