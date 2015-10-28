@@ -1,7 +1,6 @@
 ---
 user: leihs
-ruby_version: "2.1.5"
-ldap_config: False
+ruby_version: "2.1.6"
 test_instance: False
 demo_instance: False
 local_database: True

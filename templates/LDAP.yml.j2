@@ -1,0 +1,16 @@
+{# "if ... and" means to test if it's true, not just if it's defined #}
+{# Keep those -%} in there, otherwise the indent level is wrong in the resulting YAML #}
+production:
+  host: {{ ldap_hostname }}
+  port: {{ ldap_port }}
+  encryption: simple_tls
+  log_file: log/ldap_server.log
+  log_level: warn
+  master_bind_dn: {{ ldap_master_bind_dn }}
+  master_bind_pw: {{ ldap_master_bind_password }}
+  base_dn: {{ ldap_base_dn }}
+  {% if ldap_admin_dn is defined and ldap_admin_dn -%}
+    admin_dn: {{ ldap_admin_dn }}
+  {% end %}
+  unique_id_field: {{ ldap_unique_id_field }}
+  search_field: {{ ldap_search_field }}
