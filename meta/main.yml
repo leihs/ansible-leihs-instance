@@ -2,11 +2,4 @@
 dependencies:
   - { role: leihs-user }
   - { role: phusion-passenger }
-  - role: erasme.rbenv
-    ruby_deploy_user: "{{ user }}"
-    version: "{{ ruby_version }}"
-    ruby_default: "{{ ruby_version }}"
-    # rbenv:
-    #   user: "{{ user }}"
-    #   version: v0.4.0
-    #   ruby_version: "{{ ruby_version }}"
+  - { role: erasme.rbenv, ruby_deploy_user: "{{ user }}" }

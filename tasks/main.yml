@@ -5,6 +5,11 @@
   tags:
     - setup
 
+- name: Install Ruby {{ ruby_version }} for user {{ user }}
+  command: bash -l -c "rbenv install {{ ruby_version }}"
+  register: rbenv_ruby_path
+  remote_user: "{{ user }}"
+
 - name: Find the path to the version of Ruby we want Passenger to run
   command: bash -l -c "rbenv shell {{ ruby_version }} && rbenv which ruby"
   register: rbenv_ruby_path
