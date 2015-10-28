@@ -4,6 +4,18 @@
   become: "{% if ansible_user_id == 'root' %}True{% else %}False{% endif %}"
   become_user: "{{ user }}"
 
+- name: Make sure shared directory exists
+  file: path={{ deploy_to }}/shared owner={{ user }} group={{ user }} state=directory
+
+- name: Make sure attachments directory exists
+  file: path={{ deploy_to }}/shared/attachments owner={{ user }} group={{ user }} state=directory
+
+- name: Make sure shared bundle directory exists
+  file: path={{ deploy_to }}/shared/bundle owner={{ user }} group={{ user }} state=directory
+
+- name: Make sure shared log directory exists
+  file: path={{ deploy_to }}/shared/log owner={{ user }} group={{ user }} state=directory
+
 - name: Check if Ruby {{ ruby_version }} for user {{ user }} is installed
   shell: bash -l -c "rbenv versions | grep {{ ruby_version }}"
   register: ruby_installed 
