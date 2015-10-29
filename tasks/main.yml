@@ -37,6 +37,20 @@
     - seed
   when: local_database == False
 
+- debug: msg="{{ users_present_remotely.stdout }}"
+  tags:
+    - seed
+
+- debug: msg="GRAAAAAAAAAAAAAAAAA"
+  when: users_present_remotely is defined and users_present_remotely.stdout == ""
+  tags:
+    - seed
+
+- debug: msg="GROOOOOOOOOO"
+  when: users_present_locally is defined and users_present_locally.stdout == ""
+  tags:
+    - seed
+
 - include: seed.yml
   when: (users_present_locally is defined and users_present_locally.stdout == "") or
         (users_present_remotely is defined and users_present_remotely.stdout == "")
