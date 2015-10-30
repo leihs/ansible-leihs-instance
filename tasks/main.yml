@@ -25,20 +25,21 @@
 
 - name: See if the database has been seeded already
   command: mysql -u {{ mysql_user }} --password={{ mysql_password }} {{ mysql_database }} -e 'select * from users;'
-  register: users_present
+  register: local_users_present
   tags:
     - seed
   when: local_database == True
 
 - name: See if the remote database has been seeded already
   command: mysql -h {{ mysql_host }} -u {{ mysql_user }} --password={{ mysql_password }} {{ mysql_database }} -e 'select * from users;'
-  register: users_present
+  register: remote_users_present
   tags:
     - seed
   when: local_database == False
 
 - include: seed.yml
-  when: users_present is defined and users_present.stdout == ""
+  when: (local_users_present is defined and local_users_present.stdout == "") or 
+    (remote_users_present is defined and remote_users_present.stdout == "")
   tags:
     - seed
 
