@@ -1,5 +1,9 @@
 ---
 dependencies:
-  - { role: leihs-user }
-  - { role: phusion-passenger }
-  - { role: erasme.rbenv, ruby_deploy_user: "{{ user }}" }
+  - role: leihs-user
+  - role: phusion-passenger
+  - role: rbenv
+  - role: rbenv-ruby
+    ruby: 
+      version: "{{ ruby_version }}"
+      present: True
