@@ -29,7 +29,7 @@
 #  when: ruby_installed.rc != 0
 
 - name: Find the path to the version of Ruby we want Passenger to run
-  command: bash -l -c "rbenv-load && rbenv shell {{ ruby_version }} && rbenv which ruby"
+  shell: bash -l -c "rbenv-load && rbenv shell {{ ruby_version }} && rbenv which ruby"
   register: rbenv_ruby_path
   remote_user: "{{ user }}"
 

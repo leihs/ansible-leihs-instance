@@ -53,7 +53,8 @@
 
 - name: Reset the demo instance to its initial values
   shell: "{{ deploy_to }}/current/reseed_demo_data.sh"
-  remote_user: "{{ user }}"
+  become_user: "{{ user }}"
+  #remote_user: "{{ user }}"
   when: demo_instance == True
 
 - name: Copy script that runs rake leihs:cron via rbenv
