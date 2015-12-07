@@ -66,8 +66,9 @@
 
 - name: Create database.yml
   template: src=database.yml.j2 dest={{ deploy_to }}/current/config/database.yml
+
 - name: Create secret_token.rb
-  template: src=secret_token.rb.j2 dest={{ deploy_to }}/current/config/secret_token.rb owner={{ user }}
+  template: src=secret_token.rb.j2 dest={{ deploy_to }}/current/config/initializers/secret_token.rb owner={{ user }}
 
 - name: Install Bundler
   command: bash -l -c "rbenv-load && rbenv shell {{ ruby_version }} && gem install bundler"
