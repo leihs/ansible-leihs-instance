@@ -16,20 +16,20 @@
 - name: Make sure shared log directory exists
   file: path={{ deploy_to }}/shared/log owner={{ user }} group={{ user }} state=directory
 
-#- name: Check if Ruby {{ ruby_version }} for user {{ user }} is installed
-#  shell: bash -l -c "rbenv versions | grep {{ ruby_version }}"
-#  register: ruby_installed 
-#  remote_user: "{{ user }}"
-#  ignore_errors: true
+- name: Check if Ruby {{ ruby_version }} for user {{ user }} is installed
+  shell: bash -l -c "rbenv versions | grep {{ ruby_version }}"
+  register: ruby_installed
+  remote_user: "{{ user }}"
+  ignore_errors: true
 
-#- name: Install Ruby {{ ruby_version }} for user {{ user }}
-#  command: bash -l -c "rbenv install {{ ruby_version }}"
-#  register: rbenv_ruby_path
-#  remote_user: "{{ user }}"
-#  when: ruby_installed.rc != 0
+- name: Install Ruby {{ ruby_version }} for user {{ user }}
+  command: bash -l -c "rbenv install {{ ruby_version }}"
+  register: rbenv_ruby_path
+  remote_user: "{{ user }}"
+  when: ruby_installed.rc != 0
 
 - name: Find the path to the version of Ruby we want Passenger to run
-  shell: bash -l -c "rbenv-load && rbenv shell {{ ruby_version }} && rbenv which ruby"
+  shell: bash -l -c "rbenv shell {{ ruby_version }} && rbenv which ruby"
   register: rbenv_ruby_path
   remote_user: "{{ user }}"
 
@@ -71,12 +71,12 @@
   template: src=secret_token.rb.j2 dest={{ deploy_to }}/current/config/initializers/secret_token.rb owner={{ user }}
 
 - name: Install Bundler
-  command: bash -l -c "rbenv-load && rbenv shell {{ ruby_version }} && gem install bundler"
+  command: bash -l -c "rbenv shell {{ ruby_version }} && gem install bundler"
   remote_user: "{{ user }}"
 
 - name: Install RubyGems for leihs
   command: bash -l -c 'cd {{ deploy_to }}/current
-    && rbenv-load && rbenv shell {{ ruby_version }}
+    && rbenv shell {{ ruby_version }}
     && RAILS_ENV="production" bundle install --without development test --deployment --path {{ deploy_to }}/shared/bundle'
   remote_user: "{{ user }}"
 
@@ -99,13 +99,13 @@
 
 - name: Migrate database
   command: bash -l -c 'cd {{ deploy_to }}/current
-    && rbenv-load && rbenv shell {{ ruby_version }}
+    && rbenv shell {{ ruby_version }}
     && RAILS_ENV="production" bundle exec rake db:migrate'
   remote_user: "{{ user }}"
 
 - name: Precompile assets
   command: bash -l -c 'cd {{ deploy_to }}/current
-    && rbenv-load && rbenv shell {{ ruby_version }}
+    && rbenv shell {{ ruby_version }}
     && RAILS_ENV="production" bundle exec rake assets:precompile'
   remote_user: "{{ user }}"
 
@@ -113,7 +113,7 @@
 # the timeline library has hardcoded filename which are loaded dynamically
 - name: Workaround for assets
   command: bash -l -c 'cd {{ deploy_to }}/current
-    && rbenv-load && rbenv shell {{ ruby_version }}
+    && rbenv shell {{ ruby_version }}
     && cp -r vendor/assets/javascripts/simile_timeline/timeline_js public/assets/simile_timeline/'
   remote_user: "{{ user }}"
 
@@ -124,7 +124,7 @@
 
 - name: Put deploy information in the footer
   command: bash -l -c 'cd {{ deploy_to }}/current
-    && rbenv-load && rbenv shell {{ ruby_version }}
+    && rbenv shell {{ ruby_version }}
     && RAILS_ENV="production" BRANCH={{ version }} REVISION={{ revision.stdout }} bundle exec rake leihs:set_deploy_information_footer'
   when: test_instance == True
   remote_user: "{{ user }}"
@@ -148,7 +148,7 @@
 
 - name: Notify people that a new version has been deployed
   command: bash -l -c 'cd {{ deploy_to }}/current
-    && rbenv-load && rbenv shell {{ ruby_version }}
+    && rbenv shell {{ ruby_version }}
     && RAILS_ENV="production" bundle exec rails runner script/mail.rb -r {{ notification_recipients }} -s "[leihs] Deployed version {{ version }} to {{ ansible_hostname }}"'
   when: notification_recipients != False and test_instance == False and demo_instance == false
   remote_user: "{{ user }}"

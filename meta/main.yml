@@ -2,8 +2,8 @@
 dependencies:
   - role: leihs-user
   - role: phusion-passenger
-  - role: rbenv
-  - role: rbenv-ruby
-    ruby: 
-      version: "{{ ruby_version }}"
-      present: True
+#  - role: rbenv
+#  - role: rbenv-ruby
+#    ruby:
+#      version: "{{ ruby_version }}"
+#      present: True

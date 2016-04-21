@@ -1,4 +1,4 @@
 ---
 - name: Seed the database with initial data/users
-  command: bash -l -c "cd {{ deploy_to }}/current && rbenv-load && rbenv shell {{ ruby_version }} && RAILS_ENV=production bundle exec rake db:seed"
+  command: bash -l -c "cd {{ deploy_to }}/current && rbenv shell {{ ruby_version }} && RAILS_ENV=production bundle exec rake db:seed"
   remote_user: "{{ user }}"
