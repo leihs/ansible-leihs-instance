@@ -39,7 +39,7 @@ Really only makes sense as part of a larger playbook that takes care of all the 
  * **user**: The system user on the server under which leihs should run. Default: `leihs`. Optional but recommended.
  * **authorized_for_deployment**: Array of paths to SSH key files of the people who are supposed to be authorized for deploying leihs to this server. If you're not sure what to add here, just add your own key, presuming that it already has root access to the target server. The path is relative to the main playbook that you use the leihs-instance role in. Required.
  * **logrotate_filename**: The filename under /etc/logrotate.d where the logrotate configuration for this instance should be stored. The file `log/production.log` will be rotated this way. You need to give the filename to prevent filename clashes with existing files. Required.
- * **ldap_config**: Path to an LDAP configuration file to copy to config/LDAP.yml on the target host. Optional.
+ * **scout_config**: Path to a Scout monitoring configuration file on the target host. Optional.
  * **demo_instance**: Whether to seed this instance with demo data and install a cronjob that empties the database every night at 4:15 and reseeds it. Useful for demonstration purposes. Optional. Default: `false`.
  * **test_instance**: Whether this is a test instance. On test instances, the currently deployed version is displayed publicly. Optional. Default: `false`.
 
@@ -51,3 +51,14 @@ Really only makes sense as part of a larger playbook that takes care of all the 
  * **mysql_password**: MySQL password for the user `mysql_user`. Required.
  * **mysql_database**: Database name for the MySQL database. Required.
  * **mysql_host**: Hostname of the MySQL server. Only used if `local_database` is false. Required if `local_database` is false.
+
+ ### LDAP
+
+* **ldap_hostname**: Hostname of the LDAP server.
+* **ldap_port**: Port to contact the LDAP server at.
+* **ldap_master_bind_dn**: Master user to bind as.
+* **ldap_master_bind_password**: Master user password.
+* **ldap_base_dn**: Base DN that all users have to be part of.
+* **ldap_unique_id_field**: Name of the field to use as UID.
+* **ldap_search_field**: Which field to search.
+* **ldap_admin_dn**: Users with this DN automatically get admin on leihs. Optional.

@@ -64,6 +64,10 @@
   template: src=LDAP.yml.j2 dest={{ deploy_to }}/current/config/LDAP.yml
   when: ldap_hostname is defined and ldap_port is defined and ldap_master_bind_dn is defined and ldap_master_bind_password is defined and ldap_base_dn is defined and ldap_unique_id_field is defined and ldap_search_field is defined
 
+- name: Link to Scout configuration file
+  file: src={{ scout_config }} dest={{ deploy_to }}/current/config/scout_apm.yml owner={{ user }} state=link force=yes
+  when: scout_config is defined
+
 - name: Create database.yml
   template: src=database.yml.j2 dest={{ deploy_to }}/current/config/database.yml
 
