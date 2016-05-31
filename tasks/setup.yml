@@ -6,16 +6,26 @@
     - libmysqlclient-dev
     - mysql-server
     - mysql-client
-  when: local_database == True
+  when: local_database == True and database_flavor == "mysql"
 
-- name: Create MySQL root password
+- name: Install MariaDB 10 and associated dev files
+  apt: pkg={{ item }} state=present
+  with_items:
+    - python-mysqldb
+    - mariadb-server-10.0
+    - mariadb-client-10.0
+    - libmariadb-client-lgpl-dev
+    - libmariadb-client-lgpl-dev-compat
+  when: local_database == True and database_flavor == "mariadb10"
+
+- name: Create SQL root password
   mysql_user: name=root priv=*.*:ALL,GRANT password={{ mysql_root_password }} login_user=root login_password={{ mysql_root_password }} check_implicit_admin=True
   when: local_database == True
 
-- name: Create MySQL user for user
+- name: Create SQL user for user
   mysql_user: name={{ mysql_user }} priv={{ mysql_database }}.*:ALL password={{ mysql_password }} login_user=root login_password={{ mysql_root_password }}
   when: local_database == True
 
-- name: Create MySQL db for leihs production
+- name: Create SQL db for leihs production
   mysql_db: name={{ mysql_database }} encoding=utf8 state=present login_user=root login_password={{ mysql_root_password }}
   when: local_database == True

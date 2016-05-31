@@ -47,6 +47,7 @@ Really only makes sense as part of a larger playbook that takes care of all the 
 ### Database connection
 
  * **local_database**: If true, all the necessary MySQL server packages will be installed on the same server you are applying this role to, a database, users and permissions will be created. If false, a `mysql_host` option is instead expected and no user creation will be attempted. Default: `true`.
+ * **database_flavor**: One of `mysql` (default), `mariadb5` or `mariadb10`. Onlu used if `local_database` is true.
  * **mysql_user**: Username as which this leihs instance connects to the MySQL database. Required.
  * **mysql_password**: MySQL password for the user `mysql_user`. Required.
  * **mysql_database**: Database name for the MySQL database. Required.
