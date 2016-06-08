@@ -7,7 +7,7 @@ production:
   username: {{ mysql_user }}
   password: {{ mysql_password }}
   {% if  local_database is defined and local_database -%}
-    host: localhost
+    host: 127.0.0.1
   {% else -%}
     host: {{ mysql_host }}
   {% endif %}
