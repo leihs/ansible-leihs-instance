@@ -95,7 +95,7 @@
   when: local_database == True
 
 - name: Back up remote database {{ mysql_database }} from {{ mysql_host }}
-  shell: mysqldump -h {{ mysql_host }} -u{{ mysql_user }} --password={{ mysql_password }} {{ mysql_database }} > {{ deploy_to }}/shared/db_backups/leihs-{{ mysql_database}}-{{ ansible_date_time.iso8601_micro }}.sql
+  shell: mysqldump -h {{ mysql_host }} -u{{ mysql_user }} --password={{ mysql_password }} {{ mysql_database }} | bzip2 > {{ deploy_to }}/shared/db_backups/leihs-{{ mysql_database}}-{{ ansible_date_time.iso8601_micro }}.sql.bz2
   become: (ansible_user_id == 'root') | ternary(true,false)
   become_user: "{{ user }}"
   become_method: su
