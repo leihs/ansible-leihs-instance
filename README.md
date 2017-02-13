@@ -37,7 +37,7 @@ Really only makes sense as part of a larger playbook that takes care of all the 
  * **logrotate_filename**: The filename under /etc/logrotate.d where the logrotate configuration for this instance should be stored. The file `log/production.log` will be rotated this way. You need to give the filename to prevent filename clashes with existing files. Required.
  * **scout_config**: Path to a Scout monitoring configuration file on the target host. Optional.
  * **demo_instance**: Whether to seed this instance with demo data and install a cronjob that empties the database every night at 4:15 and reseeds it. Useful for demonstration purposes. Optional. Default: `false`.
- * **test_instance**: Whether this is a test instance. On test instances, the currently deployed version is displayed publicly. Optional. Default: `false`.
+ * **test_instance**: Whether this is a test instance. On test instances, the currently deployed version is displayed publicly, the background is set to an ugly green olor and email delivery is disabled. Optional. Default: `false`.
 
 
 ### Database connection
