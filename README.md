@@ -1,9 +1,5 @@
 Creates a leihs instance.
 
-You need to install erasme.rbenv from Ansible Galaxy before this works. Try this:
-
-    ansible-galaxy install erasme.rbenv
-
 Really only makes sense as part of a larger playbook that takes care of all the other dependencies, such as [that playbook](https://github.com/psy-q/leihs-setup-ansible).
 
 ## Example
